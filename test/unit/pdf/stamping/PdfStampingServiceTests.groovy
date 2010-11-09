@@ -17,18 +17,21 @@ class PdfStampingServiceTests extends GMockTestCase {
   }
 
   void testInteractionWithPdfItextPdfStamper() {
-    def ins = mock(InputStream)
-    def out =  mock(OutputStream)
+    def ins = (InputStream)mock(InputStream)
+    def out =  (OutputStream)mock(OutputStream)
     def mockPdfReader = mock(PdfReader , constructor(ins))
     def mockPdfStamper = (PdfStamper)mock(PdfStamper, constructor(mockPdfReader,out))
-    def acroFields = mock(AcroFields)
+    def acroFields = (AcroFields)mock(AcroFields)
     mockPdfStamper.getAcroFields().returns(acroFields)
 
-    acroFields.setField('name' , 'Stephen Smithstone')
+    def name = "Stephen Smithstone"
+    acroFields.setField('name' , name)
+    mockPdfStamper.setFormFlattening true
+    mockPdfStamper.close()
 
     play {
       PdfStampingService service = new PdfStampingService()
-      service.stamp(ins,out)
+      service.stamp(ins,out,name)
     }
   }
 }
